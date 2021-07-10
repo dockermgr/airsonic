@@ -2,12 +2,12 @@
 
 APPNAME="airsonic"
 
-mkdir -p "$DATADIR"/{music,podcasts,playlists,data} && chmod -Rf 777 "$DATADIR"
+sudo mkdir -p "$DATADIR"/{music,podcasts,playlists,data} && sudo chmod -Rf 777 "$DATADIR"
 
 if docker ps -a | grep "$APPNAME" >/dev/null 2>&1; then
-  docker pull airsonic/airsonic:latest && docker restart "$APPNAME"
+  sudo docker pull airsonic/airsonic:latest && docker restart "$APPNAME"
 else
-  docker run -d \
+  sudo docker run -d \
     --name="$APPNAME" \
     --hostname "$APPNAME" \
     --restart=always \
