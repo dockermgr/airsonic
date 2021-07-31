@@ -54,22 +54,26 @@ APPVERSION="$(__appversion "$REPORAW/version.txt")"
 sudo mkdir -p "$DATADIR"/{music,podcasts,playlists,data}
 sudo chmod -Rf 777 "$DATADIR"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-if docker ps -a | grep "$APPNAME" >/dev/null 2>&1; then
-  sudo docker pull "$DOCKER_HUB_URL"
-  sudo docker restart "$APPNAME"
+if [ -f "$INSTDIR/docker-compose.yml" ]; then
+  cd "$INSTDIR" && docker-compose up -d
 else
-  sudo docker run -d \
-    --name="$APPNAME" \
-    --hostname "$APPNAME" \
-    --restart=unless-stopped \
-    --privileged \
-    -e TZ=${TIMEZONE:-America/New_York} \
-    -v "$DATADIR/data":/airsonic/data:z \
-    -v "$DATADIR/music":/airsonic/music:z \
-    -v "$DATADIR/podcasts":/airsonic/podcasts:z \
-    -v "$DATADIR/playlists":/airsonic/playlists:z \
-    -p 4040:4040 \
-    "$DOCKER_HUB_URL" &>/dev/null
+  if docker ps -a | grep "$APPNAME" >/dev/null 2>&1; then
+    sudo docker pull "$DOCKER_HUB_URL"
+    sudo docker restart "$APPNAME"
+  else
+    sudo docker run -d \
+      --name="$APPNAME" \
+      --hostname "$APPNAME" \
+      --restart=unless-stopped \
+      --privileged \
+      -e TZ=${TIMEZONE:-America/New_York} \
+      -v "$DATADIR/data":/airsonic/data:z \
+      -v "$DATADIR/music":/airsonic/music:z \
+      -v "$DATADIR/podcasts":/airsonic/podcasts:z \
+      -v "$DATADIR/playlists":/airsonic/playlists:z \
+      -p 4040:4040 \
+      "$DOCKER_HUB_URL" &>/dev/null
+  fi
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if docker ps -a | grep "$APPNAME" >/dev/null 2>&1; then
