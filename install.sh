@@ -50,6 +50,7 @@ INSTDIR="${INSTDIR:-/usr/local/share/CasjaysDev/$SCRIPTS_PREFIX/$APPNAME}"
 DATADIR="${DATADIR:-/srv/docker/$APPNAME}"
 REPORAW="$REPO/raw/$GIT_DEFAULT_BRANCH"
 APPVERSION="$(__appversion "$REPORAW/version.txt")"
+TIMEZONE="${TZ:-$TIMEZONE}"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 sudo mkdir -p "$DATADIR"/{music,podcasts,playlists,data}
 sudo chmod -Rf 777 "$DATADIR"
