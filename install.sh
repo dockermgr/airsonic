@@ -48,7 +48,7 @@ DOCKER_HUB_URL="airsonic/airsonic:latest"
 APPDIR="${APPDIR:-/usr/local/share/CasjaysDev/$SCRIPTS_PREFIX/$APPNAME}"
 INSTDIR="${INSTDIR:-/usr/local/share/CasjaysDev/$SCRIPTS_PREFIX/$APPNAME}"
 DATADIR="${DATADIR:-/srv/docker/$APPNAME}"
-REPORAW="$REPO/raw/$REPO_BRANCH"
+REPORAW="$REPO/raw/$GIT_DEFAULT_BRANCH"
 APPVERSION="$(__appversion "$REPORAW/version.txt")"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 sudo mkdir -p "$DATADIR"/{music,podcasts,playlists,data}
