@@ -63,8 +63,8 @@ else
     -v "$DATADIR/data":/airsonic/data:z \
     -v "$DATADIR/music":/airsonic/music:z \
     -v "$DATADIR/podcasts":/airsonic/podcasts:z \
-    -v "$DATADIR/playlists":/airsonic/playlists:z
-  "$DOCKER_HUB_URL"
+    -v "$DATADIR/playlists":/airsonic/playlists:z \
+    "$DOCKER_HUB_URL"
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # End script
