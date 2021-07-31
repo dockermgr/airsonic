@@ -42,8 +42,9 @@ dockermgr_install
 __options "$@"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Begin installer
-DOCKER_HUB_URL="airsonic/airsonic:latest"
 APPNAME="airsonic"
+DOCKER_HUB_URL="airsonic/airsonic:latest"
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 APPDIR="/usr/local/share/docker/$APPNAME"
 INSTDIR="/usr/local/share/CasjaysDev/$SCRIPTS_PREFIX/$APPNAME"
 DATADIR="/srv/docker/$APPNAME"
@@ -67,7 +68,13 @@ else
     -v "$DATADIR/music":/airsonic/music:z \
     -v "$DATADIR/podcasts":/airsonic/podcasts:z \
     -v "$DATADIR/playlists":/airsonic/playlists:z \
-    "$DOCKER_HUB_URL"
+    "$DOCKER_HUB_URL" &>/dev/null
+fi
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+if docker ps -a | grep "$APPNAME" >/dev/null 2>&1; then
+  printf_green "Successfully setup airsonic"
+else
+  printf_return "Could not setup airsonic"
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # End script
