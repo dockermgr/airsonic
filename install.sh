@@ -56,9 +56,12 @@ sudo mkdir -p "$DATADIR"/{music,podcasts,playlists,data}
 sudo chmod -Rf 777 "$DATADIR"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if [ -f "$INSTDIR/docker-compose.yml" ]; then
-  cd "$INSTDIR" && docker-compose up -d
+  printf_blue "Installing containers using docker compose"
+  sed -i "s|REPLACE_DATADIR|$DATADIR" "$INSTDIR/docker-compose.yml"
+  cd "$INSTDIR" && sudo docker-compose up -d
 else
   if docker ps -a | grep "$APPNAME" >/dev/null 2>&1; then
+    sudo docker rm "$APPNAME" -f
     sudo docker pull "$DOCKER_HUB_URL"
     sudo docker restart "$APPNAME"
   else
