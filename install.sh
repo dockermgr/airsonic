@@ -59,7 +59,7 @@ if docker ps -a | grep "$APPNAME" >/dev/null 2>&1; then
   sudo docker restart "$APPNAME"
 else
   sudo docker run -d \
-    --name="$APPNAME" \
+    --name "$APPNAME" \
     --hostname "$APPNAME" \
     --restart=always \
     --privileged \
