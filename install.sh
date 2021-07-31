@@ -59,15 +59,16 @@ if docker ps -a | grep "$APPNAME" >/dev/null 2>&1; then
   sudo docker restart "$APPNAME"
 else
   sudo docker run -d \
-    --name "$APPNAME" \
+    --name="$APPNAME" \
     --hostname "$APPNAME" \
-    --privileged \
     --restart=unless-stopped \
+    --privileged \
+    -e TZ=${TIMEZONE:-America/New_York} \
+    -v "$DATADIR/data":/airsonic/data:z \
+    -v "$DATADIR/music":/airsonic/music:z \
+    -v "$DATADIR/podcasts":/airsonic/podcasts:z \
+    -v "$DATADIR/playlists":/airsonic/playlists:z \
     -p 4040:4040 \
-    -v "$DATADIR/data":/airsonic/data \
-    -v "$DATADIR/music":/airsonic/music \
-    -v "$DATADIR/podcasts":/airsonic/podcasts \
-    -v "$DATADIR/playlists":/airsonic/playlists \
     "$DOCKER_HUB_URL" &>/dev/null
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
