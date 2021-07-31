@@ -17,7 +17,7 @@ SRC_DIR="${BASH_SOURCE%/*}"
 # @Copyright     : Copyright: (c) 2021 casjay, casjay
 # @Created       : Saturday, Jul 31, 2021 11:47 EDT
 # @File          : airsonic
-# @Description   : airsonic container installer
+# @Description   : airsonic docker container installer
 # @TODO          :
 # @Other         :
 # @Resource      :
@@ -45,8 +45,8 @@ __options "$@"
 APPNAME="airsonic"
 DOCKER_HUB_URL="airsonic/airsonic:latest"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-APPDIR="${APPDIR:-/usr/local/share/docker/$APPNAME}"
-INSTDIR="${INSTDIR:-/usr/local/share/docker/$APPNAME}"
+APPDIR="${APPDIR:-/usr/local/share/CasjaysDev/$SCRIPTS_PREFIX/$APPNAME}"
+INSTDIR="${INSTDIR:-/usr/local/share/CasjaysDev/$SCRIPTS_PREFIX/$APPNAME}"
 DATADIR="${DATADIR:-/srv/docker/$APPNAME}"
 REPORAW="$REPO/raw/$REPO_BRANCH"
 APPVERSION="$(__appversion "$REPORAW/version.txt")"
