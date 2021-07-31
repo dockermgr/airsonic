@@ -45,9 +45,9 @@ __options "$@"
 APPNAME="airsonic"
 DOCKER_HUB_URL="airsonic/airsonic:latest"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-APPDIR="/usr/local/share/docker/$APPNAME"
-INSTDIR="/usr/local/share/CasjaysDev/$SCRIPTS_PREFIX/$APPNAME"
-DATADIR="/srv/docker/$APPNAME"
+APPDIR="${APPDIR:-/usr/local/share/docker/$APPNAME}"
+INSTDIR="${INSTDIR:-/usr/local/share/docker/$APPNAME}"
+DATADIR="${DATADIR:-/srv/docker/$APPNAME}"
 REPORAW="$REPO/raw/$REPO_BRANCH"
 APPVERSION="$(__appversion "$REPORAW/version.txt")"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,13 +61,13 @@ else
   sudo docker run -d \
     --name "$APPNAME" \
     --hostname "$APPNAME" \
-    --restart=always \
     --privileged \
+    --restart=unless-stopped \
     -p 4040:4040 \
-    -v "$DATADIR/data":/airsonic/data:z \
-    -v "$DATADIR/music":/airsonic/music:z \
-    -v "$DATADIR/podcasts":/airsonic/podcasts:z \
-    -v "$DATADIR/playlists":/airsonic/playlists:z \
+    -v "$DATADIR/data":/airsonic/data \
+    -v "$DATADIR/music":/airsonic/music \
+    -v "$DATADIR/podcasts":/airsonic/podcasts \
+    -v "$DATADIR/playlists":/airsonic/playlists \
     "$DOCKER_HUB_URL" &>/dev/null
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
