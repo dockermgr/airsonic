@@ -38,12 +38,12 @@ else
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # user system devenv dfmgr dockermgr fontmgr iconmgr pkmgr systemmgr thememgr wallpapermgr
-system_install
+dockermgr_install
 __options "$@"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Begin installer
-APPNAME="${APPNAME:-template}"
 DOCKER_HUB_URL="airsonic/airsonic:latest"
+APPNAME="airsonic"
 APPDIR="/usr/local/share/docker/$APPNAME"
 INSTDIR="/usr/local/share/CasjaysDev/$SCRIPTS_PREFIX/$APPNAME"
 DATADIR="/srv/docker/$APPNAME"
