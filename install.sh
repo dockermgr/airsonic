@@ -7,6 +7,7 @@ HOME="${USER_HOME:-${HOME}}"
 SRC_DIR="${BASH_SOURCE%/*}"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #set opts
+exit 1
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ##@Version       : 202107311147-git
@@ -40,53 +41,67 @@ fi
 # user system devenv dfmgr dockermgr fontmgr iconmgr pkmgr systemmgr thememgr wallpapermgr
 dockermgr_install
 __options "$@"
+__sudo() { if sudo -n true; then eval sudo "$*"; else eval "$*"; fi; }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Begin installer
 APPNAME="airsonic"
-DOCKER_HUB_URL="airsonic/airsonic:latest"
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-APPDIR="/usr/local/share/CasjaysDev/$SCRIPTS_PREFIX/$APPNAME"
-INSTDIR="/usr/local/share/CasjaysDev/$SCRIPTS_PREFIX/$APPNAME"
-DATADIR="/srv/docker/$APPNAME"
-REPORAW="$REPO/raw/$GIT_DEFAULT_BRANCH"
-APPVERSION="$(__appversion "$REPORAW/version.txt")"
+DOCKER_HUB_URL="airsonic/airsonic"
+AIRSONIC_SERVER_PORT="${AIRSONIC_SERVER_PORT:-15050}"
+AIRSONIC_SERVER_HOST="${AIRSONIC_SERVER_HOST:-$(hostname -f 2>/dev/null)}"
+REPO="${DOCKERMGRREPO:-https://github.com/dockermgr}/$APPNAME"
+REPO_BRANCH="${GIT_REPO_BRANCH:-master}"
 TIMEZONE="${TZ:-$TIMEZONE}"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-sudo mkdir -p "$DATADIR"/{music,podcasts,playlists,data}
-sudo chmod -Rf 777 "$DATADIR"
+if user_is_root; then
+  APPDIR="$CASJAYSDEVDIR/$SCRIPTS_PREFIX/$APPNAME"
+  INSTDIR="$CASJAYSDEVDIR/$SCRIPTS_PREFIX/$APPNAME"
+  DATADIR="/srv/docker/$APPNAME"
+else
+  APPDIR="$HOME/.local/share/CasjaysDev/$SCRIPTS_PREFIX/$APPNAME"
+  INSTDIR="$HOME/.local/share/CasjaysDev/$SCRIPTS_PREFIX/$APPNAME"
+  DATADIR="$HOME/.local/share/srv/docker/$APPNAME"
+fi
+REPORAW="$REPO/raw/$REPO_BRANCH"
+APPVERSION="$(__appversion "$REPORAW/version.txt")"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-if [ -f "$INSTDIR/docker-compose.yml" ]; then
+__sudo mkdir -p "$DATADIR/data"
+__sudo mkdir -p "$DATADIR/config"
+__sudo mkdir -p "$DATADIR/music"
+__sudo mkdir -p "$DATADIR/podcasts"
+__sudo mkdir -p "$DATADIR/playlists"
+__sudo chmod -Rf 777 "$DATADIR"
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+if [ -f "$INSTDIR/docker-compose.yml" ] && cmd_exists docker-compose; then
   printf_blue "Installing containers using docker compose"
   sed -i "s|REPLACE_DATADIR|$DATADIR" "$INSTDIR/docker-compose.yml"
   if cd "$INSTDIR"; then
-    sudo docker-compose pull &>/dev/null
-    sudo docker-compose up -d &>/dev/null
+    __sudo docker-compose pull &>/dev/null
+    __sudo docker-compose up -d &>/dev/null
   fi
 else
-  if docker ps -a | grep -qs "$APPNAME"; then
-    sudo docker pull "$DOCKER_HUB_URL" &>/dev/null
-    sudo docker restart "$APPNAME" &>/dev/null
+  if docker ps -a | grep -qsw "$APPNAME"; then
+    __sudo docker pull "$DOCKER_HUB_URL" &>/dev/null
+    __sudo docker restart "$APPNAME" &>/dev/null
   else
-    sudo docker run -d \
+    __sudo docker run -d \
       --name="$APPNAME" \
       --hostname "$APPNAME" \
       --restart=unless-stopped \
       --privileged \
-      -e TZ=${TIMEZONE:-America/New_York} \
+      -e TZ="${TIMEZONE:-America/New_York}" \
       -v "$DATADIR/data":/airsonic/data:z \
       -v "$DATADIR/music":/airsonic/music:z \
       -v "$DATADIR/podcasts":/airsonic/podcasts:z \
       -v "$DATADIR/playlists":/airsonic/playlists:z \
-      -p 4040:4040 \
+      -p "$AIRSONIC_SERVER_PORT":4040 \
       "$DOCKER_HUB_URL" &>/dev/null
   fi
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if docker ps -a | grep -qs "$APPNAME"; then
-  printf_blue "Service is available at: http://$HOSTNAME:4040"
-  return 1
+  printf_blue "Service is available at: http://$AIRSONIC_SERVER_HOST:$AIRSONIC_SERVER_PORT"
 else
-  printf_return
+  false
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # End script
