@@ -49,7 +49,7 @@ DOCKER_HUB_URL="airsonic/airsonic"
 AIRSONIC_SERVER_PORT="${AIRSONIC_SERVER_PORT:-15050}"
 AIRSONIC_SERVER_HOST="${AIRSONIC_SERVER_HOST:-$(hostname -f 2>/dev/null)}"
 REPO="${DOCKERMGRREPO:-https://github.com/dockermgr}/$APPNAME"
-REPO_BRANCH="${GIT_REPO_BRANCH:-master}"
+REPO_BRANCH="${GIT_REPO_BRANCH:-main}"
 TIMEZONE="${TZ:-$TIMEZONE}"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if user_is_root; then
