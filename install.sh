@@ -122,7 +122,7 @@ if am_i_online; then
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Copy over data files - keep the same stucture as -v dataDir/mnt:/mount
-if [[ -d "$INSTDIR/dataDir" ]] && [[ -f "$DATADIR/.installed" ]]; then
+if [[ -d "$INSTDIR/dataDir" ]] && [[ ! -f "$DATADIR/.installed" ]]; then
   cp -Rf "$INSTDIR/dataDir/." "$DATADIR/"
   touch "$DATADIR/.installed"
 fi
