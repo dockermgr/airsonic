@@ -57,15 +57,16 @@ REPO_BRANCH="${GIT_REPO_BRANCH:-master}"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Defaults
 APPNAME="airsonic"
-APPDIR="$HOME/.local/share/docker/airsonic"
-DATADIR="$HOME/.local/share/docker/airsonic/files"
-INSTDIR="$HOME/.local/share/dockermgr/docker/airsonic"
+APPDIR="$HOME/.local/share/srv/docker/airsonic"
+DATADIR="$HOME/.local/share/srv/docker/airsonic/files"
+INSTDIR="$HOME/.local/share/dockermgr/airsonic"
 REPO="${DOCKERMGRREPO:-https://github.com/dockermgr}/airsonic"
 REPORAW="$REPO/raw/$REPO_BRANCH"
 APPVERSION="$(__appversion "$REPORAW/version.txt")"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Setup plugins
 HUB_URL="linuxserver/airsonic"
+SERVER_IP="${CURRIP4:-127.0.0.1}"
 SERVER_HOST="${APPNAME:-$(hostname -f 2>/dev/null)}"
 SERVER_PORT="${SERVER_PORT:-4040}"
 SERVER_PORT_INT="${SERVER_PORT_INT:-4040}"
@@ -149,7 +150,7 @@ else
     -v "$DATADIR/music":/airsonic/music:z \
     -v "$DATADIR/podcasts":/airsonic/podcasts:z \
     -v "$DATADIR/playlists":/airsonic/playlists:z \
-    -p $SERVER_PORT:$SERVER_PORT_INT \
+    -p $SERVER_IP:$SERVER_PORT:$SERVER_PORT_INT \
     "$HUB_URL" &>/dev/null
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -167,7 +168,8 @@ dockermgr_install_version
 if docker ps -a | grep -qs "$APPNAME"; then
   printf_blue "DATADIR in $DATADIR"
   printf_cyan "Installed to $INSTDIR"
-  printf_blue "Service is available at: http://$SERVER_HOST:$SERVER_PORT"
+  printf_blue "Service is running on: $SERVER_IP:$SERVER_PORT"
+  printf_blue "and should be available at: $SERVER_HOST:$SERVER_PORT"
 else
   printf_error "Something seems to have gone wrong with the install"
 fi
