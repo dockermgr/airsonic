@@ -13,10 +13,10 @@ if [[ "$1" == "--debug" ]]; then shift 1 && set -xo pipefail && export SCRIPT_OP
 # @Author        : Jason Hempstead
 # @Contact       : jason@casjaysdev.com
 # @License       : WTFPL
-# @ReadME        : airsonic --help
+# @ReadME        : install.sh --help
 # @Copyright     : Copyright: (c) 2021 Jason Hempstead, Casjays Developments
 # @Created       : Saturday, Aug 28, 2021 20:20 EDT
-# @File          : airsonic
+# @File          : install.sh
 # @Description   : 
 # @TODO          : 
 # @Other         : 
