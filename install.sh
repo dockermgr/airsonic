@@ -145,7 +145,7 @@ else
     -v "$DATADIR/podcasts":/airsonic/podcasts:z \
     -v "$DATADIR/playlists":/airsonic/playlists:z \
     -p $SERVER_PORT:$SERVER_PORT_INT \
-    "$HUB_URL" 1>/dev/null
+    "$HUB_URL" &>/dev/null
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # run post install scripts
