@@ -17,10 +17,10 @@ if [[ "$1" == "--debug" ]]; then shift 1 && set -xo pipefail && export SCRIPT_OP
 # @Copyright     : Copyright: (c) 2021 Jason Hempstead, Casjays Developments
 # @Created       : Saturday, Aug 28, 2021 20:20 EDT
 # @File          : install.sh
-# @Description   : 
-# @TODO          : 
-# @Other         : 
-# @Resource      : 
+# @Description   :
+# @TODO          :
+# @Other         :
+# @Resource      :
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Import functions
 CASJAYSDEVDIR="${CASJAYSDEVDIR:-/usr/local/share/CasjaysDev/scripts}"
@@ -63,7 +63,7 @@ REPORAW="$REPO/raw/$REPO_BRANCH"
 APPVERSION="$(__appversion "$REPORAW/version.txt")"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Setup plugins
-HUB_URL="airsonic/airsonic"
+HUB_URL="linuxserver/airsonic"
 SERVER_HOST="${APPNAME:-$(hostname -f 2>/dev/null)}"
 SERVER_PORT="${SERVER_PORT:-15000}"
 SERVER_PORT_INT="${SERVER_PORT_INT:-4040}"
@@ -131,31 +131,31 @@ else
   fi
   if __enable_ssl && __ssl_certs "$SERVER_SSL_CRT" "$SERVER_SSL_KEY"; then
     ## SSL
-  __sudo docker run -d \
-    --name="$APPNAME" \
-    --hostname "$SERVER_HOST" \
-    --restart=unless-stopped \
-    --privileged \
-    -e TZ="${SERVER_TIMEZONE:-America/New_York}" \
-    -v "$DATADIR/data":/airsonic/data:z \
-    -v "$DATADIR/music":/airsonic/music:z \
-    -v "$DATADIR/podcasts":/airsonic/podcasts:z \
-    -v "$DATADIR/playlists":/airsonic/playlists:z \
-    -p $SERVER_PORT:$SERVER_PORT_INT \
-    "$HUB_URL" &>/dev/null
+    __sudo docker run -d \
+      --name="$APPNAME" \
+      --hostname "$SERVER_HOST" \
+      --restart=unless-stopped \
+      --privileged \
+      -e TZ="${SERVER_TIMEZONE:-America/New_York}" \
+      -v "$DATADIR/data":/airsonic/data:z \
+      -v "$DATADIR/music":/airsonic/music:z \
+      -v "$DATADIR/podcasts":/airsonic/podcasts:z \
+      -v "$DATADIR/playlists":/airsonic/playlists:z \
+      -p $SERVER_PORT:$SERVER_PORT_INT \
+      "$HUB_URL" &>/dev/null
   else
-  __sudo docker run -d \
-    --name="$APPNAME" \
-    --hostname "$SERVER_HOST" \
-    --restart=unless-stopped \
-    --privileged \
-    -e TZ="${SERVER_TIMEZONE:-America/New_York}" \
-    -v "$DATADIR/data":/airsonic/data:z \
-    -v "$DATADIR/music":/airsonic/music:z \
-    -v "$DATADIR/podcasts":/airsonic/podcasts:z \
-    -v "$DATADIR/playlists":/airsonic/playlists:z \
-    -p $SERVER_PORT:$SERVER_PORT_INT \
-    "$HUB_URL" &>/dev/null
+    __sudo docker run -d \
+      --name="$APPNAME" \
+      --hostname "$SERVER_HOST" \
+      --restart=unless-stopped \
+      --privileged \
+      -e TZ="${SERVER_TIMEZONE:-America/New_York}" \
+      -v "$DATADIR/data":/airsonic/data:z \
+      -v "$DATADIR/music":/airsonic/music:z \
+      -v "$DATADIR/podcasts":/airsonic/podcasts:z \
+      -v "$DATADIR/playlists":/airsonic/playlists:z \
+      -p $SERVER_PORT:$SERVER_PORT_INT \
+      "$HUB_URL" &>/dev/null
   fi
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
