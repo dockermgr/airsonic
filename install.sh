@@ -17,7 +17,7 @@ if [[ "$1" == "--debug" ]]; then shift 1 && set -xo pipefail && export SCRIPT_OP
 # @Copyright     : Copyright: (c) 2021 Jason Hempstead, Casjays Developments
 # @Created       : Saturday, Aug 28, 2021 20:20 EDT
 # @File          : install.sh
-# @Description   :
+# @Description   : A free, web-based media streamer, providing ubiquitious access to your music
 # @TODO          :
 # @Other         :
 # @Resource      :
