@@ -24,7 +24,7 @@ bash -c "$HOME/.local/share/CasjaysDev/dockermgr/airsonic/install.sh"
 ```
   
 #### Just run
-
+```shell
 mkdir -p "$HOME/.local/share/srv/docker/airsonic/"
 
 git clone <https://github.com/dockermgr/airsonic> "$HOME/.local/share/CasjaysDev/dockermgr/airsonic"
@@ -43,3 +43,4 @@ sudo docker run -d \
 -v "$DATADIR/playlists":/airsonic/playlists:z \
 -p PORT:INT_PORT \
 linuxserver/airsonic 1>/dev/null
+```
