@@ -65,10 +65,12 @@ APPVERSION="$(__appversion "$REPORAW/version.txt")"
 # Setup plugins
 HUB_URL="linuxserver/airsonic"
 SERVER_HOST="${APPNAME:-$(hostname -f 2>/dev/null)}"
-SERVER_PORT="${SERVER_PORT:-15000}"
+SERVER_PORT="${SERVER_PORT:-4040}"
 SERVER_PORT_INT="${SERVER_PORT_INT:-4040}"
-SERVER_PORT_SSL="${SERVER_PORT_SSL:-15100}"
-SERVER_PORT_SSL_INT="${SERVER_PORT_SSL_INT:-443}"
+SERVER_PORT_ADMIN="${SERVER_PORT_SSL:-}"
+SERVER_PORT_ADMIN_INT="${SERVER_PORT_SSL_INT:-}"
+SERVER_PORT_OTHER="${SERVER_PORT_SSL:-}"
+SERVER_PORT_OTHER_INT="${SERVER_PORT_SSL_INT:-}"
 SERVER_TIMEZONE="${TZ:-${TIMEZONE:-America/New_York}}"
 SERVER_SSL="${SERVER_SSL:-false}"
 SERVER_SSL_CRT="/etc/ssl/CA/CasjaysDev/certs/localhost.crt"
@@ -97,6 +99,9 @@ dockermgr_run_init
 ensure_dirs
 ensure_perms
 __sudo mkdir -p "$DATADIR/data"
+__sudo mkdir -p "$DATADIR/music"
+__sudo mkdir -p "$DATADIR/podcasts"
+__sudo mkdir -p "$DATADIR/playlists"
 __sudo mkdir -p "$DATADIR/config"
 __sudo chmod -Rf 777 "$APPDIR"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,34 +134,18 @@ else
     __sudo docker stop "$APPNAME" &>/dev/null
     __sudo docker rm -f "$APPNAME" &>/dev/null
   fi
-  if __enable_ssl && __ssl_certs "$SERVER_SSL_CRT" "$SERVER_SSL_KEY"; then
-    ## SSL
-    __sudo docker run -d \
-      --name="$APPNAME" \
-      --hostname "$SERVER_HOST" \
-      --restart=unless-stopped \
-      --privileged \
-      -e TZ="${SERVER_TIMEZONE:-America/New_York}" \
-      -v "$DATADIR/data":/airsonic/data:z \
-      -v "$DATADIR/music":/airsonic/music:z \
-      -v "$DATADIR/podcasts":/airsonic/podcasts:z \
-      -v "$DATADIR/playlists":/airsonic/playlists:z \
-      -p $SERVER_PORT:$SERVER_PORT_INT \
-      "$HUB_URL" &>/dev/null
-  else
-    __sudo docker run -d \
-      --name="$APPNAME" \
-      --hostname "$SERVER_HOST" \
-      --restart=unless-stopped \
-      --privileged \
-      -e TZ="${SERVER_TIMEZONE:-America/New_York}" \
-      -v "$DATADIR/data":/airsonic/data:z \
-      -v "$DATADIR/music":/airsonic/music:z \
-      -v "$DATADIR/podcasts":/airsonic/podcasts:z \
-      -v "$DATADIR/playlists":/airsonic/playlists:z \
-      -p $SERVER_PORT:$SERVER_PORT_INT \
-      "$HUB_URL" &>/dev/null
-  fi
+  __sudo docker run -d \
+    --name="$APPNAME" \
+    --hostname "$SERVER_HOST" \
+    --restart=unless-stopped \
+    --privileged \
+    -e TZ="${SERVER_TIMEZONE:-America/New_York}" \
+    -v "$DATADIR/data":/airsonic/data:z \
+    -v "$DATADIR/music":/airsonic/music:z \
+    -v "$DATADIR/podcasts":/airsonic/podcasts:z \
+    -v "$DATADIR/playlists":/airsonic/playlists:z \
+    -p $SERVER_PORT:$SERVER_PORT_INT \
+    "$HUB_URL" 1>/dev/null
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # run post install scripts
