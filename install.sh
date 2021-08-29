@@ -146,10 +146,11 @@ else
     --restart=unless-stopped \
     --privileged \
     -e TZ="${SERVER_TIMEZONE:-America/New_York}" \
-    -v "$DATADIR/data":/airsonic/data:z \
-    -v "$DATADIR/music":/airsonic/music:z \
-    -v "$DATADIR/podcasts":/airsonic/podcasts:z \
-    -v "$DATADIR/playlists":/airsonic/playlists:z \
+    -v "$DATADIR/data":/data:z \
+    -v "$DATADIR/music":/music:z \
+    -v "$DATADIR/config":/config:z \
+    -v "$DATADIR/podcasts":/podcasts:z \
+    -v "$DATADIR/playlists":/playlists:z \
     -p $SERVER_IP:$SERVER_PORT:$SERVER_PORT_INT \
     "$HUB_URL" &>/dev/null
 fi
