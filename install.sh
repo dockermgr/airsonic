@@ -67,7 +67,7 @@ APPVERSION="$(__appversion "$REPORAW/version.txt")"
 # Setup plugins
 HUB_URL="linuxserver/airsonic"
 SERVER_IP="${CURRIP4:-127.0.0.1}"
-SERVER_HOST="${APPNAME:-$(hostname -f 2>/dev/null)}"
+SERVER_HOST="$(hostname -f 2>/dev/null || echo "$SERVER_IP")"
 SERVER_PORT="${SERVER_PORT:-4040}"
 SERVER_PORT_INT="${SERVER_PORT_INT:-4040}"
 SERVER_PORT_ADMIN="${SERVER_PORT_SSL:-}"
@@ -123,6 +123,7 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Copy over data files - keep the same stucture as -v dataDir/mnt:/mount
 if [[ -d "$INSTDIR/dataDir" ]] && [[ ! -f "$DATADIR/.installed" ]]; then
+  printf_blue "Copying files to $DATADIR"
   cp -Rf "$INSTDIR/dataDir/." "$DATADIR/"
   touch "$DATADIR/.installed"
 fi
@@ -154,6 +155,18 @@ else
     --device /dev/snd:/dev/snd \
     -p $SERVER_IP:$SERVER_PORT:$SERVER_PORT_INT \
     "$HUB_URL" &>/dev/null
+fi
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Install nginx proxy
+if [[ ! -f "/etc/nginx/vhosts.d/$APPNAME.conf" ]] && [[ -f "$APPDIR/nginx/proxy.conf" ]]; then
+  if __port_not_in_use "$SERVER_PORT"; then
+    printf_green "Copying the nginx configuration"
+    __sudo_root cp -Rf "$APPDIR/nginx/proxy.conf" "/etc/nginx/vhosts.d/$APPNAME.conf"
+    sed -i "s|REPLACE_APPNAME|$APPNAME|g" "/etc/nginx/vhosts.d/$APPNAME.conf"
+    sed -i "s|REPLACE_SERVER_HOST|$SERVER_HOST|g" "/etc/nginx/vhosts.d/$APPNAME.conf"
+    sed -i "s|REPLACE_SERVER_PORT|$SERVER_PORT|g" "/etc/nginx/vhosts.d/$APPNAME.conf"
+    __sudo_root systemctl reload nginx
+  fi
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # run post install scripts
