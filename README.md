@@ -1,8 +1,8 @@
 # Welcome to dockermgr airsonic installer 👋
   
-### airsonic README  
+## airsonic README  
   
-#### Requires scripts to be installed
+### Requires scripts to be installed
 
 ```shell
  sudo bash -c "$(curl -LSs <https://github.com/dockermgr/installer/raw/main/install.sh>)"
