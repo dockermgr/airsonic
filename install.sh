@@ -185,7 +185,7 @@ if docker ps -a | grep -qs "$APPNAME"; then
   printf_cyan "Installed to $INSTDIR"
   printf_blue "Service is running on: $SERVER_IP:$SERVER_PORT"
   printf_blue "and should be available at: $SERVER_HOST:$SERVER_PORT"
-  rm -Rf "$INSTDIR/dataDir"/*/.gitkeep &>/dev/null
+  rm -Rf "$DATADIR/dataDir"/*/.gitkeep &>/dev/null
 else
   printf_error "Something seems to have gone wrong with the install"
 fi
