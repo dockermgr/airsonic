@@ -42,5 +42,5 @@ sudo docker run -d \
 -v "$DATADIR/podcasts":/airsonic/podcasts:z \
 -v "$DATADIR/playlists":/airsonic/playlists:z \
 -p PORT:INT_PORT \
-linuxserver/airsonic 1>/dev/null
+linuxserver/airsonic &>/dev/null
 ```
