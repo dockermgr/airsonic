@@ -65,7 +65,7 @@ REPORAW="$REPO/raw/$REPO_BRANCH"
 APPVERSION="$(__appversion "$REPORAW/version.txt")"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Setup plugins
-HUB_URL="linuxserver/airsonic"
+HUB_URL="airsonicadvanced/airsonic-advanced"
 NGINX_HTTP="${NGINX_HTTP:-80}"
 NGINX_HTTPS="${NGINX_HTTPS:-443}"
 SERVER_IP="${CURRIP4:-127.0.0.1}"
@@ -75,8 +75,8 @@ SERVER_PORT="${SERVER_PORT:-4040}"
 SERVER_PORT_INT="${SERVER_PORT_INT:-4040}"
 SERVER_PORT_ADMIN="${SERVER_PORT_ADMIN:-}"
 SERVER_PORT_ADMIN_INT="${SERVER_PORT_ADMIN_INT:-}"
-SERVER_PORT_OTHER="${SERVER_PORT_OTHER:-}"
-SERVER_PORT_OTHER_INT="${SERVER_PORT_OTHER_INT:-}"
+SERVER_PORT_OTHER="${SERVER_PORT_OTHER:-4041}"
+SERVER_PORT_OTHER_INT="${SERVER_PORT_OTHER_INT:-4041}"
 SERVER_WEB_PORT="${SERVER_WEB_PORT:-$SERVER_PORT}"
 SERVER_TIMEZONE="${TZ:-${TIMEZONE:-America/New_York}}"
 SERVER_SSL_CRT="/etc/ssl/CA/CasjaysDev/certs/localhost.crt"
@@ -156,12 +156,13 @@ else
     --privileged \
     --device /dev/snd:/dev/snd \
     -e TZ="${SERVER_TIMEZONE:-America/New_York}" \
+    -e JAVA_OPTS=-Dserver.forward-headers-strategy=native \
     -v "$DATADIR/data":/data \
-    -v "$DATADIR/music":/music \
-    -v "$DATADIR/config":/config \
-    -v "$DATADIR/podcasts":/podcasts \
-    -v "$DATADIR/playlists":/playlists \
+    -v "$DATADIR/music":/var/music \
+    -v "$DATADIR/podcasts":/var/podcasts \
+    -v "$DATADIR/playlists":/var/playlists \
     -p $SERVER_LISTEN:$SERVER_PORT:$SERVER_PORT_INT \
+    -p $SERVER_LISTEN:$SERVER_PORT_OTHER:$SERVER_PORT_OTHER_INT \
     "$HUB_URL" &>/dev/null
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
