@@ -130,9 +130,6 @@ if [[ -d "$INSTDIR/dataDir" ]] && [[ ! -f "$DATADIR/.installed" ]]; then
   touch "$DATADIR/.installed"
   find "$DATADIR" -name ".gitkeep" -type f -exec rm -rf {} \; &>/dev/null
   mkdir -p "$DATADIR/data"
-  mkdir -p "$DATADIR/music"
-  mkdir -p "$DATADIR/podcasts"
-  mkdir -p "$DATADIR/playlists"
   mkdir -p "$DATADIR/config"
   chmod -Rf 777 "$APPDIR"
 fi
@@ -210,7 +207,7 @@ if docker ps -a | grep -qs "$APPNAME"; then
   [[ -n "$SERVER_PORT_OTHER" ]] && printf_blue "HTTPS is available at: https://$SERVER_HOST:$SERVER_PORT_OTHER"
   [[ -n "$SERVER_PORT_INT" ]] && printf_blue "Admin is available at: http://$SERVER_HOST:$SERVER_PORT_INT"
   [[ -n "$SERVER_AUTH" ]] && printf_yellow "Email: admin"
-  [[ -n "$SERVER_AUTH" ]] && printf_yellow "Password: admin"
+  [[ -n "$SERVER_AUTH" ]] && printf_yellow "Password: changeme"
   [[ -z "$SERVER_PORT" ]] && printf_yellow "This container does not have a web interface"
 else
   printf_error "Something seems to have gone wrong with the install"
