@@ -155,8 +155,8 @@ else
     --device /dev/snd:/dev/snd \
     -e TZ="${SERVER_TIMEZONE:-America/New_York}" \
     -e JAVA_OPTS=-Dserver.forward-headers-strategy=native \
-    --device /dev/snd
-  -v "$HOME/Music":/var/music/$USER \
+    --device /dev/snd \
+    -v "$HOME/Music":/var/music/$USER \
     -v "$DATADIR/config":/var/airsonic \
     -v "$DATADIR/data/music":/var/music \
     -v "$DATADIR/data/podcasts":/var/podcasts \
