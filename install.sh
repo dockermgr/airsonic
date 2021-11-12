@@ -158,10 +158,10 @@ else
     --device /dev/snd:/dev/snd \
     -e TZ="${SERVER_TIMEZONE:-America/New_York}" \
     -e JAVA_OPTS=-Dserver.forward-headers-strategy=native \
-    -v "$DATADIR/data":/data \
-    -v "$DATADIR/music":/var/music \
-    -v "$DATADIR/podcasts":/var/podcasts \
-    -v "$DATADIR/playlists":/var/playlists \
+    -v "$DATADIR/config":/var/airsonic \
+    -v "$DATADIR/data/music":/var/music \
+    -v "$DATADIR/data/podcasts":/var/podcasts \
+    -v "$DATADIR/data/playlists":/var/playlists \
     -p $SERVER_LISTEN:$SERVER_PORT:$SERVER_PORT_INT \
     -p $SERVER_LISTEN:$SERVER_PORT_OTHER:$SERVER_PORT_OTHER_INT \
     "$HUB_URL" &>/dev/null
