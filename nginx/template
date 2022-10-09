@@ -1,4 +1,4 @@
-#Reverse Proxy for REPLACE_APPNAME
+# Reverse Proxy for REPLACE_APPNAME
 
 server {
   listen REPLACE_NGINX_HTTPS ssl http2;
