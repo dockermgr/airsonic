@@ -1,6 +1,6 @@
 ## 👋 Welcome to airsonic 🚀  
 
-airsonic README  
+A free, web-based media streamer, providing ubiquitious access to your music  
   
   
 ## Requires scripts to be installed  

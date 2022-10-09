@@ -9,7 +9,7 @@
 # @@Copyright        :  Copyright: (c) 2022 Jason Hempstead, Casjays Developments
 # @@Created          :  Sunday, Oct 09, 2022 14:54 EDT
 # @@File             :  install.sh
-# @@Description      :
+# @@Description      :  A free, web-based media streamer, providing ubiquitious access to your music
 # @@Changelog        :  New script
 # @@TODO             :  Better documentation
 # @@Other            :
