@@ -222,7 +222,11 @@ if [ "$SSL_ENABLED" = "true" ]; then
   [ -f "$SERVER_SSL_CA/localhost.crt" ] && SERVER_SSL_CA="$SERVER_SSL_DIR/ca.crt" && ADDITIONAL_MOUNTS+="$SERVER_SSL_DIR/localhost.crt:${SSL_CA:-/data/ca.crt} "
   [ -f "$SERVER_SSL_DIR/localhost.key" ] && SERVER_SSL_KEY="$SERVER_SSL_DIR/localhost.key" && ADDITIONAL_MOUNTS+="$SERVER_SSL_DIR/localhost.key:${SSL_KEY:-/data/ssl.key} "
   [ -f "$SERVER_SSL_DIR/localhost.crt" ] && SERVER_SSL_CRT="$SERVER_SSL_DIR/localhost.crt" && ADDITIONAL_MOUNTS+="$SERVER_SSL_DIR/localhost.crt:${SSL_CERT:-/data/ssl.crt} "
+else
+  SERVER_PROTO="${SERVER_PROTO:-http}"
 fi
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+NGINX_PROXY="${NGINX_PROXY:-$SERVER_PROTO://$SERVER_LISTEN_ADDR:$SERVER_WEB_PORT}"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SET_ENV=""
 for env in $ADDITION_ENV; do
@@ -293,6 +297,7 @@ else
     rm -Rf "${TMP:-/tmp}/$APPNAME.err.log"
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SERVER_WEB_PORT="${SERVER_WEB_PORT//:*/}"
 # Install nginx proxy
 if [ ! -f "/etc/nginx/vhosts.d/$SERVER_HOST_NAME.conf" ] && [ -f "$INSTDIR/nginx/proxy.conf" ]; then
   cp -f "$INSTDIR/nginx/proxy.conf" "/tmp/$$.$SERVER_HOST_NAME.conf"
