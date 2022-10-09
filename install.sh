@@ -132,8 +132,8 @@ ADDITIONAL_MOUNTS+="$HOME/Music:/var/music/$USER:z $DATADIR/data/music:/var/musi
 ADDITIONAL_MOUNTS+="$DATADIR/data/podcasts:/var/podcasts $DATADIR/data/playlists:/var/playlists:z "
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Add EXT_PORT:INT_PORT for each additional port - LISTEN will be added
-SERVER_WEB_PORT="4000:4000"
-SERVER_PORT_ADD_CUSTOM="4041:4041"
+SERVER_WEB_PORT="4040:4040"
+SERVER_PORT_ADD_CUSTOM="4041:4041 "
 SERVER_PORT_ADD_CUSTOM+=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Mount docker socket [pathToSocket]
