@@ -51,32 +51,6 @@ else
   exit 90
 fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Define pre-install scripts
-run_pre_install() {
-
-  return ${?:-0}
-}
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Define custom functions
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-if [ -f "$PWD/$SCRIPTSFUNCTFILE" ]; then
-  . "$PWD/$SCRIPTSFUNCTFILE"
-elif [ -f "$SCRIPTSFUNCTDIR/$SCRIPTSFUNCTFILE" ]; then
-  . "$SCRIPTSFUNCTDIR/$SCRIPTSFUNCTFILE"
-elif connect_test; then
-  curl -q -LSsf "$SCRIPTSFUNCTURL/$SCRIPTSFUNCTFILE" -o "/tmp/$SCRIPTSFUNCTFILE" || exit 1
-  . "/tmp/$SCRIPTSFUNCTFILE"
-else
-  echo "Can not load the functions file: $SCRIPTSFUNCTDIR/$SCRIPTSFUNCTFILE" 1>&2
-  exit 90
-fi
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Call the main function
-dockermgr_install
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# trap the cleanup function
-trap_exit
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Define extra functions
 __sudo() { sudo -n true && eval sudo "$*" || eval "$*" || return 1; }
 __sudo_root() { sudo -n true && ask_for_password true && eval sudo "$*" || return 1; }
@@ -84,15 +58,14 @@ __enable_ssl() { [ "$SERVER_SSL" = "yes" ] && [ "$SERVER_SSL" = "true" ] && retu
 __ssl_certs() { [ -f "${1:-$SERVER_SSL_CRT}" ] && [ -f "${2:-SERVER_SSL_KEY}" ] && return 0 || return 1; }
 __port_not_in_use() { [ -d "/etc/nginx/vhosts.d" ] && grep -wRsq "${1:-$SERVER_PORT_EXT}" /etc/nginx/vhosts.d && return 0 || return 1; }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Make sure the scripts repo is installed
-scripts_check
+# Define pre-install scripts
+run_pre_install() {
+
+  return ${?:-0}
+}
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Require a higher version
-dockermgr_req_version "$APPVERSION"
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Repository variables
-REPO="${DOCKERMGRREPO:-https://github.com/dockermgr}/airsonic"
-APPVERSION="$(__appversion "$REPO/raw/${GIT_REPO_BRANCH:-main}/version.txt")"
+# Define custom functions
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Defaults variables
 APPNAME="airsonic"
@@ -100,6 +73,22 @@ INSTDIR="$HOME/.local/share/CasjaysDev/dockermgr/airsonic"
 APPDIR="$HOME/.local/share/srv/docker/airsonic"
 DATADIR="$HOME/.local/share/srv/docker/airsonic/files"
 DOCKERMGR_HOME="${DOCKERMGR_HOME:-$HOME/.config/myscripts/dockermgr}"
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Repository variables
+REPO="${DOCKERMGRREPO:-https://github.com/dockermgr}/airsonic"
+APPVERSION="$(__appversion "$REPO/raw/${GIT_REPO_BRANCH:-main}/version.txt")"
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Call the main function
+dockermgr_install
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# trap the cleanup function
+trap_exit
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Make sure the scripts repo is installed
+scripts_check
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Require a higher version
+dockermgr_req_version "$APPVERSION"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Directory variables for container
 SERVER_SSL_DIR="$DATADIR/ssl"
