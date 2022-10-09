@@ -161,9 +161,9 @@ SERVER_SSL_KEY="${SERVER_SSL_KEY:-$SERVER_SSL_DIR/private/localhost.key}"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Setup nginx proxy variables
 NGINX_SSL="true"
-NGINX_HTTP="${NGINX_HTTP:-80}"
-NGINX_HTTPS="${NGINX_HTTPS:-443}"
-NGINX_PROXY="${NGINX_PROXY:-http://$SERVER_LISTEN_ADDR:$SERVER_WEB_PORT}"
+NGINX_HTTP="80"
+NGINX_HTTPS="443"
+NGINX_PROXY=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # End of configuration
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
