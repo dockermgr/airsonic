@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # shellcheck shell=bash
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-##@Version           :  202210091129-git
+##@Version           :  202210091443-git
 # @@Author           :  Jason Hempstead
 # @@Contact          :  jason@casjaysdev.com
 # @@License          :  LICENSE.md
 # @@ReadME           :  install.sh --help
 # @@Copyright        :  Copyright: (c) 2022 Jason Hempstead, Casjays Developments
-# @@Created          :  Sunday, Oct 09, 2022 13:54 EDT
+# @@Created          :  Sunday, Oct 09, 2022 14:54 EDT
 # @@File             :  install.sh
 # @@Description      :
 # @@Changelog        :  New script
@@ -19,7 +19,7 @@
 # @@Template         :  installers/dockermgr
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 APPNAME="airsonic"
-VERSION="202210091129-git"
+VERSION="202210091443-git"
 HOME="${USER_HOME:-$HOME}"
 USER="${SUDO_USER:-$USER}"
 RUN_USER="${SUDO_USER:-$USER}"
@@ -92,10 +92,9 @@ trap_exit
 dockermgr_req_version "$APPVERSION"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Setup variables
-TZ="${TZ:-$TIMEZONE}"
-LOCAL_IP="${LOCAL_IP:-127.0.0.1}"
-SERVER_HOST_NAME="${SERVER_HOST_NAME:-}"
-SERVER_DOMAIN_NAME="${SERVER_DOMAIN_NAME:-}"
+TZ="America/New_York"
+SERVER_HOST_NAME=""
+SERVER_DOMAIN_NAME=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # URL to container image [docker pull URL]
 HUB_IMAGE_URL="airsonicadvanced/airsonic-advanced"
@@ -109,7 +108,8 @@ SSL_CA=""
 SSL_KEY=""
 SSL_CERT=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Set to true for container to listen on localhost only
+# Set to true for container to listen on LOCAL_IP only
+LOCAL_IP="127.0.0.1"
 SERVER_LISTEN_LOCAL="false"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Set this to 0.0.0.0 to listen on all or specify addresses
@@ -131,9 +131,11 @@ ADDITIONAL_MOUNTS="$LOCAL_CONFIG_DIR:/config:z $LOCAL_DATA_DIR:/data:z "
 ADDITIONAL_MOUNTS+="$HOME/Music:/var/music/$USER:z $DATADIR/data/music:/var/music:z "
 ADDITIONAL_MOUNTS+="$DATADIR/data/podcasts:/var/podcasts $DATADIR/data/playlists:/var/playlists:z "
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Add EXT_PORT:INT_PORT for each additional port - LISTEN will be added
-SERVER_WEB_PORT="4040:4040"
-SERVER_PORT_ADD_CUSTOM="4041:4041 "
+# Add Add main port [port] or [port:port] - LISTEN will be added
+SERVER_WEB_PORT="4040"
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Same as SERVER_WEB_PORT and do not add SERVER_WEB_PORT here as it will be added
+SERVER_PORT_ADD_CUSTOM="4041:4041 1900:1900/udp "
 SERVER_PORT_ADD_CUSTOM+=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Mount docker socket [pathToSocket]
@@ -141,8 +143,8 @@ DOCKER_SOCKET_ENABLED="false"
 DOCKER_SOCKET_MOUNT="/var/run/docker.sock"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Show user info message
-SERVER_MESSAGE_USER=""
-SERVER_MESSAGE_PASS=""
+SERVER_MESSAGE_USER="admin"
+SERVER_MESSAGE_PASS="admin"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Show post install message
 SERVER_MESSAGE_POST=""
@@ -205,9 +207,9 @@ chmod -Rf 777 "$APPDIR"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Variables - Do not change
 SERVER_IP="${CURRIP4:-$LOCAL_IP}"
-SERVER_PROTO="${SERVER_PROTO:-http}"
 SERVER_PORT="${SERVER_WEB_PORT//:*/}"
-SERVER_TIMEZONE="${TZ:-America/New_York}"
+SERVER_PROTO="${SERVER_PROTO:-http}"
+SERVER_TIMEZONE="${TZ:-$TIMEZONE}"
 SERVER_MESSAGE_POST="${SERVER_MESSAGE_POST:-}"
 SERVER_LISTEN_ADDR="${DEFINE_LISTEN:-$SERVER_IP}"
 DEFINE_LISTEN="${DEFINE_LISTEN:-$SERVER_LISTEN_ADDR}"
@@ -231,22 +233,33 @@ NGINX_PROXY="${NGINX_PROXY:-$SERVER_PROTO://$SERVER_LISTEN_ADDR:$SERVER_PORT}"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SET_ENV=""
 for env in $ADDITION_ENV; do
-  [ -z "$env" ] || SET_ENV+="--env $env "
+  if [ -n "$env" ]; then
+    SET_ENV+="--env $env "
+  fi
 done
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SET_DEV=""
 for dev in $ADDITION_DEVICES; do
-  [ -z "$env" ] || SET_DEV+="--device $dev "
+  if [ -n "$dev" ]; then
+    echo "$dev" | grep ':' || dev="$dev:$dev"
+    SET_DEV+="--device $dev "
+  fi
 done
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SET_MNT=""
 for mnt in $ADDITIONAL_MOUNTS; do
-  [ -z "$env" ] || SET_MNT+="--volume $mnt "
+  if [ -n "$mnt" ]; then
+    echo "$mnt" | grep ':' || port="$mnt:$mnt"
+    SET_MNT+="--volume $mnt "
+  fi
 done
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SET_PORT=""
 for port in $SERVER_WEB_PORT $SERVER_PORT_ADD_CUSTOM; do
-  [ -z "$port" ] || SET_PORT+="--publish $DEFINE_LISTEN:$port "
+  if [ -n "$port" ]; then
+    echo "$port" | grep ':' || port="$port:$port"
+    SET_PORT+="--publish $DEFINE_LISTEN:$port "
+  fi
 done
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Clone/update the repo
@@ -264,7 +277,7 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Copy over data files - keep the same stucture as -v dataDir/mnt:/mount
 if [ -d "$INSTDIR/dataDir" ] && [ ! -f "$DATADIR/.installed" ]; then
-  printf_blue "Copying files to $DATADIR"
+  printf_yellow "Copying files to $DATADIR"
   cp -Rf "$INSTDIR/dataDir/." "$DATADIR/"
   find "$DATADIR" -name ".gitkeep" -type f -exec rm -rf {} \; &>/dev/null
 fi
@@ -276,7 +289,7 @@ fi
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Main progam
 if cmd_exists docker-compose && [ -f "$INSTDIR/docker-compose.yml" ]; then
-  printf_blue "Installing containers using docker-compose"
+  printf_yellow "Installing containers using docker-compose"
   sed -i 's|REPLACE_DATADIR|'$DATADIR'' "$INSTDIR/docker-compose.yml"
   if cd "$INSTDIR"; then
     __sudo docker-compose pull &>/dev/null
@@ -342,10 +355,10 @@ dockermgr_install_version
 # run exit function
 if docker ps -a | grep -qs "$APPNAME"; then
   printf_cyan "$APPNAME has been installed to $INSTDIR"
-  printf_blue "The DATADIR is in $DATADIR"
+  printf_cyan "The DATADIR is in $DATADIR"
   [ -z "$SERVER_PORT" ] && printf_yellow "This container does not have a web interface"
-  [ -n "$SERVER_LISTEN_ADDR" ] && [ -n "$SERVER_PORT" ] && printf_blue "Service is running on: $SERVER_LISTEN_ADDR:$SERVER_PORT"
-  [ -n "$SERVER_LISTEN_ADDR" ] && [ -n "$SERVER_PORT" ] && printf_blue "and should be available at: $NGINX_PROXY or $SERVER_PROTO//$SERVER_HOST_NAME:$SERVER_PORT"
+  [ -n "$SERVER_LISTEN_ADDR" ] && [ -n "$SERVER_PORT" ] && printf_yellow "Service is running on: $SERVER_LISTEN_ADDR:$SERVER_PORT"
+  [ -n "$SERVER_LISTEN_ADDR" ] && [ -n "$SERVER_PORT" ] && printf_yellow "and should be available at: $NGINX_PROXY or $SERVER_PROTO//$SERVER_HOST_NAME:$SERVER_PORT"
   [ -n "$SERVER_MESSAGE_USER" ] && printf_cyan "Username is:  $SERVER_MESSAGE_USER"
   [ -n "$SERVER_MESSAGE_PASS" ] && printf_purple "Password is:  $SERVER_MESSAGE_PASS"
   [ -n "$SERVER_MESSAGE_POST" ] && printf_green "$SERVER_MESSAGE_POST"
