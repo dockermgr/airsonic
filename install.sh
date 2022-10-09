@@ -209,12 +209,12 @@ SERVER_PROTO="${SERVER_PROTO:-http}"
 SERVER_TIMEZONE="${TZ:-America/New_York}"
 SERVER_MESSAGE_POST="${SERVER_MESSAGE_POST:-}"
 SERVER_LISTEN_ADDR="${DEFINE_LISTEN:-$SERVER_IP}"
-DEFINE_LISTEN="${DEFINE_LISTEN:-$SERVER_LISTEN_ADDR}:"
+DEFINE_LISTEN="${DEFINE_LISTEN:-$SERVER_LISTEN_ADDR}"
 SERVER_DOMAIN_NAME="${SERVER_DOMAIN_NAME:-"$(hostname -d 2>/dev/null | grep '^' || echo 'local')"}"
 SERVER_HOST_NAME="${SERVER_HOST_NAME:-$APPNAME.$SERVER_DOMAIN_NAME}"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 [ -d "$DATADIR/ssl" ] && SERVER_SSL_DIR="$DATADIR/ssl" SERVER_SSL_CA
-[ "$SERVER_LISTEN_LOCAL" = "true" ] && DEFINE_LISTEN="${LOCAL_IP:-127.0.0.1}:"
+[ "$SERVER_LISTEN_LOCAL" = "true" ] && DEFINE_LISTEN="${LOCAL_IP:-127.0.0.1}"
 [ "$DOCKER_SOCKET_ENABLED" = "true" ] && ADDITIONAL_MOUNTS+="$DOCKER_SOCKET_MOUNT:/var/run/docker.sock "
 [ "$NGINX_SSL" = "true" ] && [ -n "$NGINX_HTTPS" ] && NGINX_PORT="${NGINX_HTTPS:-443}" || NGINX_PORT="${NGINX_HTTP:-80}"
 if [ "$SSL_ENABLED" = "true" ]; then
@@ -280,6 +280,7 @@ if cmd_exists docker-compose && [ -f "$INSTDIR/docker-compose.yml" ]; then
 else
   __sudo docker stop "$APPNAME" &>/dev/null
   __sudo docker rm -f "$APPNAME" &>/dev/null
+  printf_cyan "Updating the image from $HUB_IMAGE_URL"
   __sudo docker pull "$HUB_IMAGE_URL" &>/dev/null
   __sudo docker run -d \
     --privileged \
