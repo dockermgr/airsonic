@@ -139,9 +139,9 @@ ADDITION_DEVICES=""
 ADDITION_DEVICES+=""
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Define additional mounts [ /dir:/dir ]
-ADDITIONAL_MOUNTS="$LOCAL_CONFIG_DIR:/config:z $LOCAL_DATA_DIR:/data:z "
-ADDITIONAL_MOUNTS+="$HOME/Music:/var/music/$USER:z $LOCAL_DATA_DIR/data/music:/var/music:z "
+ADDITIONAL_MOUNTS="$LOCAL_CONFIG_DIR/airsonic.properties:/var/airsonic/airsonic.properties:z $LOCAL_DATA_DIR:/data:z "
 ADDITIONAL_MOUNTS+="$LOCAL_DATA_DIR/data/podcasts:/var/podcasts $LOCAL_DATA_DIR/data/playlists:/var/playlists:z "
+ADDITIONAL_MOUNTS+="$HOME/Music:/var/music:z "
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Add Add main port [port] or [port:port] - LISTEN will be added
 SERVER_WEB_PORT="4040"
