@@ -1,69 +1,83 @@
 ## 👋 Welcome to airsonic 🚀  
 
-A free, web-based media streamer, providing ubiquitious access to your music  
+A free, web-based media streamer, providing ubiquitious access to your music
   
   
-## Requires scripts to be installed  
+## Install my system scripts  
 
 ```shell
  sudo bash -c "$(curl -q -LSsf "https://github.com/systemmgr/installer/raw/main/install.sh")"
- systemmgr --config && systemmgr install scripts  
+ sudo systemmgr --config && sudo systemmgr install scripts  
 ```
-
+  
 ## Automatic install/update  
-
+  
 ```shell
 dockermgr update airsonic
 ```
-
-OR
-
+  
+## Install and run container
+  
 ```shell
-mkdir -p "$HOME/.local/share/srv/docker/airsonic/dataDir"
+mkdir -p "$HOME/.local/share/srv/docker/airsonic/rootfs"
 git clone "https://github.com/dockermgr/airsonic" "$HOME/.local/share/CasjaysDev/dockermgr/airsonic"
-cp -Rfva "$HOME/.local/share/CasjaysDev/dockermgr/airsonic/dataDir/." "$HOME/.local/share/srv/docker/airsonic/dataDir/"
-```
-
-## via command line  
-
-```shell
-docker pull airsonicadvanced/airsonic-advanced:latest && \
+cp -Rfva "$HOME/.local/share/CasjaysDev/dockermgr/airsonic/rootfs/." "$HOME/.local/share/srv/docker/airsonic/rootfs/"
 docker run -d \
 --restart always \
 --privileged \
 --name casjaysdevdocker-airsonic \
---hostname casjaysdev-airsonic \
+--hostname airsonic \
 -e TZ=${TIMEZONE:-America/New_York} \
--v "$HOME/Music":/airsonic/music:z \
--v "$HOME/.local/share/srv/docker/airsonic/dataDir/data":/airsonic/data:z \
--v "$HOME/.local/share/srv/docker/airsonic/dataDir/podcasts":/airsonic/podcasts:z \
--v "$HOME/.local/share/srv/docker/airsonic/dataDir/playlists":/airsonic/playlists:z \
--p 4040:4040 \
-airsonicadvanced/airsonic-advanced:latest
+-v "$HOME/Music":"/airsonic/music/$USER":z \
+-v "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/data":/data:z \
+-v "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/config":/config:z \
+-v "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/data/podcasts":/airsonic/podcasts:z \
+-v "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/data/playlists":/airsonic/playlists:z \
+-p 0.0.0.0:4040:4040 \
+casjaysdevdocker/airsonic:latest
 ```
-
+  
 ## via docker-compose  
-
+  
 ```yaml
 version: "2"
 services:
-  airsonic:
-    image: airsonicadvanced/airsonic-advanced
-    container_name: airsonic
+  ProjectName:
+    image: casjaysdevdocker/airsonic
+    container_name: casjaysdevdocker-airsonic
     environment:
       - TZ=America/New_York
-      - HOSTNAME=casjaysdev-airsonic
+      - HOSTNAME=airsonic
     volumes:
-      - "$HOME/Music":/airsonic/music:z
-      - "$HOME/.local/share/srv/docker/airsonic/dataDir/data":/airsonic/data:z
-      - "$HOME/.local/share/srv/docker/airsonic/dataDir/podcasts":/airsonic/podcasts:z
-      - "$HOME/.local/share/srv/docker/airsonic/dataDir/playlists":/airsonic/playlists:z
+      - "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/data":/data:z
+      - "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/config":/config:z
+      - "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/data/podcasts":/airsonic/podcasts:z
+      - "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/data/playlists":/airsonic/playlists:z
     ports:
-      - 4040:4040
+      -0.0.0.0:4040:4040
     restart: always
 ```
-
-## Author  
-
+  
+## Get source files  
+  
+```shell
+dockermgr download src casjaysdevdocker/airsonic
+```
+  
+OR
+  
+```shell
+git clone "https://github.com/casjaysdevdocker/airsonic" "$HOME/Projects/github/casjaysdevdocker/airsonic"
+```
+  
+## Build container  
+  
+```shell
+cd "$HOME/Projects/github/casjaysdevdocker/airsonic"
+buildx 
+```
+  
+## Authors  
+  
 🤖 casjay: [Github](https://github.com/casjay) 🤖  
-⛵ dockermgr: [Github](https://github.com/dockermgr) ⛵  
+⛵ casjaysdevdocker: [Github](https://github.com/casjaysdevdocker) [Docker](https://hub.docker.com/u/casjaysdevdocker) ⛵  
