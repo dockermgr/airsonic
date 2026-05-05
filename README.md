@@ -19,9 +19,9 @@ dockermgr update airsonic
 ## Install and run container
   
 ```shell
-mkdir -p "$HOME/.local/share/srv/docker/airsonic/rootfs"
+mkdir -p "$HOME/.local/share/srv/docker/airsonic/volumes"
 git clone "https://github.com/dockermgr/airsonic" "$HOME/.local/share/CasjaysDev/dockermgr/airsonic"
-cp -Rfva "$HOME/.local/share/CasjaysDev/dockermgr/airsonic/rootfs/." "$HOME/.local/share/srv/docker/airsonic/rootfs/"
+cp -Rfva "$HOME/.local/share/CasjaysDev/dockermgr/airsonic/volumes/." "$HOME/.local/share/srv/docker/airsonic/volumes/"
 docker run -d \
 --restart always \
 --privileged \
@@ -29,10 +29,10 @@ docker run -d \
 --hostname airsonic \
 -e TZ=${TIMEZONE:-America/New_York} \
 -v "$HOME/Music":"/airsonic/music/$USER":z \
--v "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/data":/data:z \
--v "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/config":/config:z \
--v "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/data/podcasts":/airsonic/podcasts:z \
--v "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/data/playlists":/airsonic/playlists:z \
+-v "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/volumes/data":/data:z \
+-v "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/volumes/config":/config:z \
+-v "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/volumes/data/podcasts":/airsonic/podcasts:z \
+-v "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/volumes/data/playlists":/airsonic/playlists:z \
 -p 0.0.0.0:4040:4040 \
 casjaysdevdocker/airsonic:latest
 ```
@@ -49,10 +49,10 @@ services:
       - TZ=America/New_York
       - HOSTNAME=airsonic
     volumes:
-      - "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/data":/data:z
-      - "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/config":/config:z
-      - "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/data/podcasts":/airsonic/podcasts:z
-      - "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/rootfs/data/playlists":/airsonic/playlists:z
+      - "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/volumes/data":/data:z
+      - "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/volumes/config":/config:z
+      - "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/volumes/data/podcasts":/airsonic/podcasts:z
+      - "$HOME/.local/share/srv/docker/casjaysdevdocker-airsonic/volumes/data/playlists":/airsonic/playlists:z
     ports:
       -0.0.0.0:4040:4040
     restart: always
